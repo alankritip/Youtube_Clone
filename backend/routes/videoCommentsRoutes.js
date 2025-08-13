@@ -44,3 +44,20 @@ router.post(
     res.status(201).json(populated);
   }
 );
+
+
+/**
+ * @route PATCH /:id
+ * @description Edit a comment (only by the comment's owner)
+ * @access Private
+ */
+router.patch('/:id', verifyJWT, async (req, res) => {
+  const comment = await Comment.findById(req.params.id);
+  if (!comment) return res.status(404).json({ message: 'Comment not found' });
+  if (String(comment.user) !== req.user.id) return res.status(403).json({ message: 'Forbidden' });
+
+  if (req.body.text) comment.text = req.body.text;
+  await comment.save();
+
+  res.json(comment);
+});
