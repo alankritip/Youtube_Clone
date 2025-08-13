@@ -126,3 +126,27 @@ router.post('/:id/view', async (req, res) => {
   if (!video) return res.status(404).json({ message: 'Video not found' });
   res.json({ views: video.views });
 });
+
+
+/**
+ * @route POST /:id/like
+ * @description Toggle like for the video (removes dislike if exists)
+ * @access Private
+ */
+router.post('/:id/like', verifyJWT, async (req, res) => {
+  const video = await Video.findById(req.params.id);
+  if (!video) return res.status(404).json({ message: 'Video not found' });
+
+  const uid = req.user.id;
+  const liked = video.likes.some((u) => String(u) === uid);
+
+  if (liked) {
+    video.likes.pull(uid);
+  } else {
+    video.likes.addToSet(uid);
+    video.dislikes.pull(uid);
+  }
+
+  await video.save();
+  res.json({ likes: video.likes.length, dislikes: video.dislikes.length });
+});
