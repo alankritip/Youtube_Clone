@@ -63,3 +63,16 @@ router.post(
     res.status(201).json(video);
   }
 );
+
+
+/**
+ * @route GET /:id
+ * @description Get a single video by ID
+ */
+router.get('/:id', async (req, res) => {
+  const video = await Video.findById(req.params.id)
+    .populate('channel', 'channelName')
+    .populate('uploader', 'username avatar');
+  if (!video) return res.status(404).json({ message: 'Video not found' });
+  res.json(video);
+});
