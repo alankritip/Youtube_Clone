@@ -35,3 +35,31 @@ router.get('/', async (req, res) => {
   const total = await Video.countDocuments(filter);
   res.json({ videos, total });
 });
+
+
+/**
+ * @route POST /
+ * @description Create a new video entry (metadata only, actual files are hosted externally)
+ * @access Private
+ */
+router.post(
+  '/',
+  verifyJWT,
+  [
+    body('title').trim().notEmpty().withMessage('Title is required'),
+    body('videoUrl').isURL().withMessage('Valid videoUrl required'),
+    body('thumbnailUrl').isURL().withMessage('Valid thumbnailUrl required'),
+    body('channel').notEmpty().withMessage('Channel ID required'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const video = await Video.create({
+      ...req.body,
+      uploader: req.user.id
+    });
+
+    res.status(201).json(video);
+  }
+);
