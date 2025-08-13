@@ -96,3 +96,18 @@ router.patch('/:id', verifyJWT, async (req, res) => {
   await video.save();
   res.json(video);
 });
+
+
+/**
+ * @route DELETE /:id
+ * @description Delete a video (only allowed for uploader)
+ * @access Private
+ */
+router.delete('/:id', verifyJWT, async (req, res) => {
+  const video = await Video.findById(req.params.id);
+  if (!video) return res.status(404).json({ message: 'Video not found' });
+  if (String(video.uploader) !== req.user.id) return res.status(403).json({ message: 'Forbidden' });
+
+  await video.deleteOne();
+  res.json({ message: 'Video deleted successfully' });
+});
