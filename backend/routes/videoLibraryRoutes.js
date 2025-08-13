@@ -150,3 +150,30 @@ router.post('/:id/like', verifyJWT, async (req, res) => {
   await video.save();
   res.json({ likes: video.likes.length, dislikes: video.dislikes.length });
 });
+
+
+
+/**
+ * @route POST /:id/dislike
+ * @description Toggle dislike for the video (removes like if exists)
+ * @access Private
+ */
+router.post('/:id/dislike', verifyJWT, async (req, res) => {
+  const video = await Video.findById(req.params.id);
+  if (!video) return res.status(404).json({ message: 'Video not found' });
+
+  const uid = req.user.id;
+  const disliked = video.dislikes.some((u) => String(u) === uid);
+
+  if (disliked) {
+    video.dislikes.pull(uid);
+  } else {
+    video.dislikes.addToSet(uid);
+    video.likes.pull(uid);
+  }
+
+  await video.save();
+  res.json({ likes: video.likes.length, dislikes: video.dislikes.length });
+});
+
+export default router;
