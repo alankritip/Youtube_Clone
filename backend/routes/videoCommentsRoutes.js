@@ -61,3 +61,20 @@ router.patch('/:id', verifyJWT, async (req, res) => {
 
   res.json(comment);
 });
+
+
+/**
+ * @route DELETE /:id
+ * @description Delete a comment (only by the comment's owner)
+ * @access Private
+ */
+router.delete('/:id', verifyJWT, async (req, res) => {
+  const comment = await Comment.findById(req.params.id);
+  if (!comment) return res.status(404).json({ message: 'Comment not found' });
+  if (String(comment.user) !== req.user.id) return res.status(403).json({ message: 'Forbidden' });
+
+  await comment.deleteOne();
+  res.json({ message: 'Comment deleted successfully' });
+});
+
+export default router;
