@@ -111,3 +111,18 @@ router.delete('/:id', verifyJWT, async (req, res) => {
   await video.deleteOne();
   res.json({ message: 'Video deleted successfully' });
 });
+
+
+/**
+ * @route POST /:id/view
+ * @description Increment video view count
+ */
+router.post('/:id/view', async (req, res) => {
+  const video = await Video.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { views: 1 } },
+    { new: true }
+  );
+  if (!video) return res.status(404).json({ message: 'Video not found' });
+  res.json({ views: video.views });
+});
