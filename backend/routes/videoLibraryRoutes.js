@@ -76,3 +76,23 @@ router.get('/:id', async (req, res) => {
   if (!video) return res.status(404).json({ message: 'Video not found' });
   res.json(video);
 });
+
+
+
+/**
+ * @route PATCH /:id
+ * @description Update video details (only allowed for uploader)
+ * @access Private
+ */
+router.patch('/:id', verifyJWT, async (req, res) => {
+  const video = await Video.findById(req.params.id);
+  if (!video) return res.status(404).json({ message: 'Video not found' });
+  if (String(video.uploader) !== req.user.id) return res.status(403).json({ message: 'Forbidden' });
+
+  // Allow updating only specific fields
+  const fields = ['title', 'description', 'thumbnailUrl', 'category'];
+  fields.forEach(f => (req.body[f] !== undefined ? (video[f] = req.body[f]) : null));
+
+  await video.save();
+  res.json(video);
+});
