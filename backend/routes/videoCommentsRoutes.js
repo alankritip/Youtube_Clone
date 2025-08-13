@@ -19,3 +19,28 @@ router.get('/video/:videoId', async (req, res) => {
 
   res.json(comments);
 });
+
+
+/**
+ * @route POST /video/:videoId
+ * @description Add a comment to a video
+ * @access Private
+ */
+router.post(
+  '/video/:videoId',
+  verifyJWT,
+  [body('text').isLength({ min: 1 }).withMessage('Comment cannot be empty')],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const comment = await Comment.create({
+      video: req.params.videoId,
+      user: req.user.id,
+      text: req.body.text
+    });
+
+    const populated = await comment.populate('user', 'username avatar');
+    res.status(201).json(populated);
+  }
+);
