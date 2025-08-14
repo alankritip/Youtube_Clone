@@ -5,7 +5,7 @@
 
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import MainHeader from '../components/layout/MainHeader.jsx';
+import MainHeader from '../components/layouts/MainHeader.jsx';
 import VideoPreviewCard from '../components/cards/VideoPreviewCard.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../api/axiosInstance.js';

@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect } from 'react';
-import MainHeader from '../components/layout/MainHeader.jsx';
-import NavSidebar from '../components/layout/NavSidebar.jsx';
+import MainHeader from '../components/layouts/MainHeader.jsx';
+import NavSidebar from '../components/layouts/NavSidebar.jsx';
 import CategoryFilters from '../components/filters/CategoryFilters.jsx';
 import VideoPreviewCard from '../components/cards/VideoPreviewCard.jsx';
 import api from '../api/axiosInstance.js';

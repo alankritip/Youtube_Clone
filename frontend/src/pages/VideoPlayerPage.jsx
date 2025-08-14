@@ -5,7 +5,7 @@
 
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import MainHeader from '../components/layout/MainHeader.jsx';
+import MainHeader from '../components/layouts/MainHeader.jsx';
 import CommentBox from '../components/comments/CommentBox.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import api from '../api/axiosInstance.js';

@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MainHeader from '../components/layout/MainHeader.jsx';
+import MainHeader from '../components/layouts/MainHeader.jsx';
 import api from '../api/axiosInstance.js';
 
 export default function CreateChannelPage() {
