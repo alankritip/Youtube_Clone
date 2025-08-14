@@ -1,23 +1,26 @@
-/**
- * @file AuthContext.jsx
- * @description Provides global auth state (user, login, logout) via React Context.
- */
-
 import { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext(null);
+
 export const useAuth = () => useContext(AuthContext);
+
+export const getStoredToken = () => localStorage.getItem('token') || '';
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      localStorage.removeItem('user');
+      return null;
+    }
   });
 
-  const login = ({ token, user }) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
+  const login = ({ token, user: userPayload }) => {
+    if (token) localStorage.setItem('token', token);
+    if (userPayload) localStorage.setItem('user', JSON.stringify(userPayload));
+    setUser(userPayload || null);
   };
 
   const logout = () => {

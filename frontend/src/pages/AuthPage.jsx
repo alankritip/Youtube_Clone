@@ -10,20 +10,26 @@ export default function AuthPage() {
   const navigate = useNavigate();
 
   const submit = async (e) => {
-    e.preventDefault();
-    try {
-      const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
-      const { data } = await api.post(endpoint, form);
-      login(data);
-      navigate('/');
-    } catch (err) {
-      alert(
-        err?.response?.data?.errors
-          ?.map(er => `${er.field || er.path}: ${er.msg}`)
-          .join('\n') || 'Error'
-      );
-    }
-  };
+  e.preventDefault();
+  try {
+    const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+    const payload = {
+      username: form.username.trim(),
+      email: form.email.trim(),
+      password: form.password
+    };
+    const { data } = await api.post(endpoint, payload);
+    login(data);
+    navigate('/');
+  } catch (err) {
+    alert(
+      err?.response?.data?.errors
+        ?.map(er => `${er.field || er.path}: ${er.msg}`)
+        .join('\n') || 'Error'
+    );
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">

@@ -32,17 +32,18 @@ export default function VideoPlayerPage() {
     fetchComments();
   }, [id]);
 
-  const likeVideo = async () => {
-    if (!user) return alert("Sign in required");
-    const { data } = await api.post(`/videos/${id}/like`);
-    setVideo(v => ({ ...v, likes: data.likes, dislikes: data.dislikes }));
-  };
+const likeVideo = async () => {
+  if (!user) return alert("Sign in required");
+  const { data } = await api.post(`/videos/${id}/like`);
+  setVideo(v => ({ ...v, likes: data.likes, dislikes: data.dislikes }));
+};
 
-  const dislikeVideo = async () => {
-    if (!user) return alert("Sign in required");
-    const { data } = await api.post(`/videos/${id}/dislike`);
-    setVideo(v => ({ ...v, likes: data.likes, dislikes: data.dislikes }));
-  };
+const dislikeVideo = async () => {
+  if (!user) return alert("Sign in required");
+  const { data } = await api.post(`/videos/${id}/dislike`);
+  setVideo(v => ({ ...v, likes: data.likes, dislikes: data.dislikes }));
+};
+
 
   const addComment = async (text) => {
     if (!user) return alert("Sign in required");
@@ -76,8 +77,13 @@ export default function VideoPlayerPage() {
         </div>
         <h1 className="text-2xl font-bold">{video.title}</h1>
         <div className="flex gap-4 my-2">
-          <button onClick={likeVideo} className="border px-3 py-1 rounded">👍 {video.likes?.length || 0}</button>
-          <button onClick={dislikeVideo} className="border px-3 py-1 rounded">👎 {video.dislikes?.length || 0}</button>
+          <button onClick={likeVideo} className="border px-3 py-1 rounded">
+  👍 {Array.isArray(video.likes) ? video.likes.length : video.likes || 0}
+</button>
+<button onClick={dislikeVideo} className="border px-3 py-1 rounded">
+  👎 {Array.isArray(video.dislikes) ? video.dislikes.length : video.dislikes || 0}
+</button>
+
         </div>
         <p className="mb-4">{video.description}</p>
 

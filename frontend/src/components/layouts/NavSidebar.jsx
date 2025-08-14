@@ -1,40 +1,47 @@
 import { Link } from 'react-router-dom';
 
-export default function NavSidebar({ open }) {
-return (
-<>
-{/* Desktop rail */}
-<aside className="hidden md:block bg-white border-r w-60 sticky top-14 h-[calc(100vh-56px)]">
-<nav className="py-3">
-<Link className="flex items-center gap-4 px-4 py-2 hover:bg-gray-100" to="/">
-<span>🏠</span><span>Home</span>
-</Link>
-<button className="w-full text-left flex items-center gap-4 px-4 py-2 hover:bg-gray-100">
-<span>🎬</span><span>Shorts</span>
-</button>
-<button className="w-full text-left flex items-center gap-4 px-4 py-2 hover:bg-gray-100">
-<span>📺</span><span>Subscriptions</span>
-</button>
-<hr className="my-3" />
-<Link className="flex items-center gap-4 px-4 py-2 hover:bg-gray-100" to="/channel/create">
-<span>➕</span><span>Create Channel</span>
-</Link>
-</nav>
-</aside>
+export default function NavSidebar({ open, user, onLogout, onClose, onCreateChannelClick }) {
+  return (
+    <aside
+      className={`fixed inset-y-0 left-0 bg-white w-64 shadow transform ${
+        open ? 'translate-x-0' : '-translate-x-full'
+      } transition-transform duration-200 ease-in-out z-50`}
+    >
+      <div className="p-4 space-y-4">
+        <Link to="/" onClick={onClose} className="block font-semibold">
+          Home
+        </Link>
 
-  {/* Mobile drawer (simple version: toggled block) */}
-  <aside className={`md:hidden fixed inset-y-0 left-0 z-50 bg-white border-r w-64 p-3 transform transition-transform ${open ? 'translate-x-0' : '-translate-x-full'}`}>
-    <nav className="py-2">
-      <Link className="block px-3 py-2 hover:bg-gray-100 rounded" to="/">Home</Link>
-      <button className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded">Shorts</button>
-      <button className="block w-full text-left px-3 py-2 hover:bg-gray-100 rounded">Subscriptions</button>
-      <hr className="my-3" />
-      <Link className="block px-3 py-2 hover:bg-gray-100 rounded" to="/channel/create">Create Channel</Link>
-    </nav>
-  </aside>
+        {/* Show Create Channel for logged-in users on mobile */}
+        {user && (
+          <button
+            onClick={onCreateChannelClick}
+            className="w-full text-left rounded-lg px-4 py-2 bg-black text-white hover:bg-black/90"
+          >
+            Create channel
+          </button>
+        )}
 
-  {/* Backdrop for mobile */}
-  {open && <div className="md:hidden fixed inset-0 z-40 bg-black/30" />}
-</>
-);
+        {user ? (
+          <button
+            onClick={() => {
+              onLogout();
+              onClose();
+            }}
+            className="w-full text-left rounded-lg px-4 py-2 hover:bg-gray-100"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link
+            to="/auth"
+            onClick={onClose}
+            className="block rounded-lg px-4 py-2 text-blue-600 hover:bg-blue-50"
+          >
+            Sign in
+          </Link>
+        )}
+      </div>
+    </aside>
+  );
 }

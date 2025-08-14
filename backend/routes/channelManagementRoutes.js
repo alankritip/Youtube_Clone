@@ -37,7 +37,9 @@ router.get('/:id', async (req, res) => {
   const channel = await Channel.findById(req.params.id).populate('owner', 'username avatar');
   if (!channel) return res.status(404).json({ message: 'Channel not found' });
 
-  const videos = await Video.find({ channel: channel._id }).sort({ createdAt: -1 });
+  const videos = await Video.find({ channel: channel._id })
+  .populate('channel', 'channelName')
+  .sort({ createdAt: -1 });
   res.json({ channel, videos });
 });
 
