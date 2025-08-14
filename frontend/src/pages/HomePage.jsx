@@ -1,3 +1,4 @@
+
 /**
  * @file HomePage.jsx
  * @description Displays video grid with category filter, search, and responsive layout.
@@ -21,7 +22,7 @@ export default function HomePage() {
       const { data } = await api.get('/videos', {
         params: { q: searchQuery, category },
       });
-      setVideos(data.videos);
+      setVideos(data.videos || []);
     } catch (err) {
       console.error('Failed to fetch videos:', err);
     }
@@ -29,16 +30,26 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchVideos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, category]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <MainHeader onSearch={setSearchQuery} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <div className="flex flex-1">
+    <div className="min-h-screen bg-[#f8f8f8]">
+      <MainHeader
+        onSearch={setSearchQuery}
+        toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+      />
+
+      <div className="flex">
         <NavSidebar open={sidebarOpen} />
+
         <main className="flex-1">
-          <CategoryFilters selected={category} onChange={setCategory} />
-          <div className="grid gap-4 p-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <CategoryFilters
+            selected={category}
+            onChange={setCategory}
+          />
+
+          <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {videos.map((v) => (
               <VideoPreviewCard key={v._id} v={v} />
             ))}
